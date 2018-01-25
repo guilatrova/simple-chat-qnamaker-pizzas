@@ -1,0 +1,15 @@
+{
+  "name": "bots",
+  "version": "1.0.0",
+  "description": "Studying about bot framework",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Guilherme Latrova <guilhermelatrova@hotmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "botbuilder": "^3.13.1",
+    "restify": "^6.3.4"
+  }
+}
