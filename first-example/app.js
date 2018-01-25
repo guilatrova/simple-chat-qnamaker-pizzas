@@ -1,7 +1,5 @@
 var builder = require('botbuilder');
 var restify = require('restify');
-var cognitiveservices = require('../../../lib/botbuilder-cognitiveservices');
-
 
 var server = restify.createServer();
 server.listen(process.env.port || process.env.PORT || 3978, function () {
