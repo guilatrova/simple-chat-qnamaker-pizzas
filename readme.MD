@@ -25,3 +25,10 @@ Foi cadastro o seguinte par no QnAMaker:
 
 - [botbuilder](https://www.npmjs.com/package/botbuilder)
 - [botbuilder-cognitive services](https://www.npmjs.com/package/botbuilder-cognitiveservices)
+
+# Setup
+
+```
+npm install
+node app
+```
