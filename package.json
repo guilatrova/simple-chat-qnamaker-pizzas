@@ -10,6 +10,10 @@
   "license": "MIT",
   "dependencies": {
     "botbuilder": "^3.13.1",
+    "botbuilder-cognitiveservices": "^1.1.0",
+    "botbuilder-qna-maker": "^1.0.0",
+    "html-entities": "^1.2.1",
+    "request": "^2.83.0",
     "restify": "^6.3.4"
   }
 }
