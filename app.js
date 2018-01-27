@@ -2,12 +2,6 @@ const cognitiveservices = require('botbuilder-cognitiveservices')
 const builder = require('botbuilder');
 const startServer = require('./server');
 
-/* REFERENCES
-/https://github.com/Microsoft/BotBuilder-CognitiveServices/blob/master/Node/samples/QnAMaker/QnAMakerWithFunctionOverrides/app.js
-https://www.npmjs.com/package/botbuilder
-https://www.npmjs.com/package/botbuilder-cognitiveservices
-*/
-
 var connector = new builder.ChatConnector({
     appId: process.env.MICROSOFT_APP_ID,
     appPassword: process.env.MICROSOFT_APP_PASSWORD
