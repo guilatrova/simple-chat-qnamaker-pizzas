@@ -1,8 +1,9 @@
 var builder = require('botbuilder');
 var restify = require('restify');
+var request = require('request');
 
-var LuisActions = require('botbuilder-cognitiveservices').LuisActionBinding;
-var LuisModelUrl = "https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/3d447561-0a42-42ae-8858-e6756fbb2476?subscription-key=376fc739a9034815b3d30eaef6add40f&verbose=true&timezoneOffset=0&q=";
+const LuisModelUrl = "https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/3d447561-0a42-42ae-8858-e6756fbb2476?subscription-key=376fc739a9034815b3d30eaef6add40f&verbose=true&timezoneOffset=0&q=";
+const MoedaURL = "http://api-cotacoes-maratona-bots.azurewebsites.net/api/Cotacoes/";
 
 var server = restify.createServer();
 server.listen(process.env.port || process.env.PORT || 3978, function () {
@@ -19,56 +20,35 @@ var bot = new builder.UniversalBot(connector);
 bot.set('storage', new builder.MemoryBotStorage());         // Register in-memory state storage
 
 var recognizer = new builder.LuisRecognizer(LuisModelUrl);
-var intentDialog = bot.dialog('/', new builder.IntentDialog({ recognizers: [recognizer] })
-    .onDefault(DefaultReplyHandler));
-
-LuisActions.bindToBotDialog(bot, intentDialog, LuisModelUrl, SampleActions, {
-    defaultReply: DefaultReplyHandler,
-    fulfillReply: FulfillReplyHandler,
-    onContextCreation: onContextCreationHandler
-});
-
-function DefaultReplyHandler(session) {
-    session.endDialog(
-        'Sorry, I did not understand "%s". Use sentences like "What is the time in Miami?", "Search for 5 stars hotels in Barcelona", "Tell me the weather in Buenos Aires", "Location of SFO airport".',
-        session.message.text);
-}
-
-function FulfillReplyHandler(session, actionModel) {
-    console.log('Action Binding "' + actionModel.intentName + '" completed:', actionModel);
-    session.endDialog(actionModel.result.toString());
-}
-
-function onContextCreationHandler(action, actionModel, next, session) {
-
-    // Here you can implement a callback to hydrate the actionModel as per request
-
-    // For example:
-    // If your action is related with a 'Booking' intent, then you could do something like:
-    // BookingSystem.Hydrate(action) - hydrate action context already stored within some repository
-    // (ex. using a booking ref that you can get from the context somehow)
-
-    // To simply showcase the idea, here we are setting the checkin/checkout dates for 1 night
-    // when the user starts a contextual intent related with the 'FindHotelsAction'
-
-    // So if you simply write 'Change location to Madrid' the main action will have required parameters already set up
-    // and you can get the user information for any purpose
-
-    // The session object is available to read from conversationData or
-    // you could identify the user if the session.message.user.id is somehow mapped to a userId in your domain
-
-    // NOTE: Remember to call next() to continue executing the action binding's logic
-
-    if (action.intentName === 'FindHotels') {
-        if (!actionModel.parameters.Checkin) {
-            actionModel.parameters.Checkin = new Date();
+var intents = new builder.IntentDialog({ recognizers: [recognizer] })
+    .matches('Cumprimento', [
+        function(session) {
+            session.send('Eae, tranquilo? :)');
         }
-
-        if (!actionModel.parameters.Checkout) {
-            actionModel.parameters.Checkout = new Date();
-            actionModel.parameters.Checkout.setDate(actionModel.parameters.Checkout.getDate() + 1);
+    ])
+    .matches('Sobre', [
+        function(session) {
+            session.send('Eu sou apenas um BOT de um estudante :/');
         }
-    }
+    ])
+    .matches('Cotacao', [
+        function(session, args, next) {
+            const moedas = args.entities.map(e => e.entity).join(',');
+            session.send("Vou fazer a cotação das seguintes moedas: %s", moedas);
+            request.get(MoedaURL + moedas, (error, response) => {
+                if (error) {
+                    session.send('Deu ruim :(');
+                }
+                else {
+                    const json = JSON.parse(response.body);
+                    const result = json.map(c => `- **${c.nome}** → ${c.valor}`).join('\n');
+                    session.send(result);
+                }
+            });
+        }
+    ])
+    .onDefault((session) => {
+        session.send('Sorry, I did not understand \'%s\'. Type \'help\' if you need assistance.', session.message.text);
+    });
 
-    next();
-}
+bot.dialog('/', intents);
