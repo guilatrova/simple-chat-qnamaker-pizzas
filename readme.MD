@@ -6,7 +6,7 @@ Projeto feito no segundo módulo da [maratona BOTS](https://ticapacitacion.com/c
 
 As pizzas foram salvas como `json`, e é retornado um card pra cada pizza cadastrada.
 
-![pizzas result](resultado.png)
+![pizzas result](qnaMaker/resultado.png)
 
 Foi cadastro o seguinte par no QnAMaker:
 
