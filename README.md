@@ -8,7 +8,7 @@ As pizzas foram salvas como `json`, e é retornado um card pra cada pizza cadast
 
 ![pizzas result](qnaMaker/resultado.png)
 
-Foi cadastro o seguinte par no QnAMaker:
+Foi cadastrado o seguinte no QnAMaker:
 
 **Pergunta**
 > Quais pizzas você tem?
